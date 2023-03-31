@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kuber-basics-deployment
+spec:
+  replicas: 2
+  selector: 
+    matchLabels: 
+      app: kuber-basics
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata: 
+      labels: 
+        app: kuber-basics
+    spec:
+      containers:
+      - name: docker-basics
+        image: nikolaybezdenezhnykh/docker-basics:0.1
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /health
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 2
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /health
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
